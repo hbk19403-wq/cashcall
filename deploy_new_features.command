@@ -1,0 +1,36 @@
+#!/bin/bash
+export PATH="/Users/ameyaswani/node/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+cd "$(dirname "$0")"
+
+echo "🚀 CashCall — New Features Deploy"
+echo "==================================="
+echo "  ✅ Location type (restaurant / bar & restaurant) at signup"
+echo "  ✅ Menu Engineering — food cost %, labor per plate, BCG matrix"
+echo "  ✅ Liquor Inventory — bottle catalog, pour tracking, low-stock alerts"
+echo "  ✅ Budget & Forecasting — per-location targets, actuals, 3-month forecast"
+echo ""
+echo "⚠️  IMPORTANT: Run the SQL migration first!"
+echo "   1. Open: https://supabase.com/dashboard/project/lhwepylnuurjbarkfugo/sql/new"
+echo "   2. Paste contents of: migration_new_features.sql"
+echo "   3. Click Run"
+echo ""
+echo "⚡ Deploying now (run SQL migration in Supabase if not done yet)..."
+
+# Vercel token is read from the environment or .env.local (VERCEL_TOKEN=...), never stored in this file.
+TOKEN="${VERCEL_TOKEN:-$(grep -s '^VERCEL_TOKEN=' "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/.env.local" | cut -d= -f2- | tr -d '"')}"
+if [ -z "$TOKEN" ]; then echo "VERCEL_TOKEN is not set. Add VERCEL_TOKEN=... to .env.local, or export it."; exit 1; fi
+echo ""
+echo "🔨 Deploying to Vercel..."
+/Users/ameyaswani/node/bin/vercel deploy --prod --yes --token "$TOKEN"
+
+echo ""
+echo "✅ Deploy complete!"
+echo ""
+echo "🌐 New pages live at cashcall.io:"
+echo "   /location/[id]/menu-engineering  — Menu Engineering"
+echo "   /location/[id]/liquor-inventory  — Liquor Inventory (bar only)"
+echo "   /location/[id]/budget            — Budget & Forecast"
+echo ""
+echo "🔗 Links auto-appear in location page quick actions."
+echo "   Liquor Inventory only shows for Bar & Restaurant locations."
+echo ""

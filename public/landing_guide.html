@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CashCall.io — Financial Visibility for Restaurateurs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { font-family: 'Inter', sans-serif; }
+    body { background: #020817; color: #f8fafc; }
+    .gradient-text { background: linear-gradient(135deg, #10b981, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-glow { background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(16,185,129,0.15), transparent); }
+    .card-hover { transition: transform 0.2s, border-color 0.2s; }
+    .card-hover:hover { transform: translateY(-2px); border-color: rgba(16,185,129,0.4); }
+    .step-line::after { content: ''; position: absolute; left: 22px; top: 52px; width: 2px; height: calc(100% - 20px); background: linear-gradient(to bottom, #10b981, transparent); }
+    input[type=range] { -webkit-appearance: none; appearance: none; height: 6px; border-radius: 3px; background: #1e293b; outline: none; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #10b981; cursor: pointer; border: 3px solid #020817; box-shadow: 0 0 0 2px rgba(16,185,129,0.3); }
+    .tab-active { background: #10b981 !important; color: #020817 !important; }
+    .shimmer { background: linear-gradient(90deg, #0f172a 25%, #1e293b 50%, #0f172a 75%); background-size: 200% 100%; }
+    .roi-card { background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(6,182,212,0.05)); border: 1px solid rgba(16,185,129,0.2); }
+    .comparison-win { background: rgba(16,185,129,0.08); }
+    .checklist-dot { width: 44px; height: 44px; min-width: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+<!-- ─── NAV ──────────────────────────────────────────────────────────── -->
+<header class="sticky top-0 z-50 bg-[#020817]/90 backdrop-blur-md border-b border-slate-800">
+  <div class="max-w-7xl mx-auto px-6 h-18 flex items-center justify-between py-4">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <i class="fa-solid fa-chart-line text-slate-950 text-sm font-bold"></i>
+      </div>
+      <span class="text-xl font-black tracking-tight text-white">Cash<span class="text-emerald-400">Call</span><span class="text-xs font-mono ml-1 text-slate-500 border border-slate-700 px-1.5 py-0.5 rounded">.io</span></span>
+    </div>
+    <nav class="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-400">
+      <a href="#roi" class="hover:text-emerald-400 transition">ROI Calculator</a>
+      <a href="#onboarding" class="hover:text-emerald-400 transition">How It Works</a>
+      <a href="#compare" class="hover:text-emerald-400 transition">vs. Enterprise</a>
+      <a href="#preview" class="hover:text-emerald-400 transition">Platform</a>
+    </nav>
+    <div class="flex items-center space-x-3">
+      <a href="/login" class="hidden sm:inline-flex text-sm font-semibold text-slate-400 hover:text-white px-3 py-2 transition">Sign In</a>
+      <a href="/trial" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-emerald-500/20 transition transform hover:-translate-y-0.5">Start Free Trial</a>
+    </div>
+  </div>
+</header>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────────── -->
+<section class="relative pt-20 pb-16 overflow-hidden hero-glow">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/25 px-4 py-1.5 rounded-full text-emerald-400 text-xs font-semibold mb-6">
+      <i class="fa-solid fa-fire-flame-curved"></i>
+      <span>Built By Restaurateurs · For Restaurateurs</span>
+    </div>
+    <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white mb-5 leading-tight">
+      Stop Leaking <span class="gradient-text">$1,200+ Every Month</span><br />in Hidden Margins
+    </h1>
+    <p class="text-lg sm:text-xl text-slate-400 mb-4 max-w-2xl mx-auto leading-relaxed">
+      CashCall pays for itself on your <strong class="text-white">very first invoice audit</strong> and saves 10+ hours of back-office bookkeeping every week — for just <span class="text-emerald-400 font-bold">$80/location/month</span>.
+    </p>
+    <p class="text-slate-500 text-sm mb-10">No credit card. Live in under 10 minutes.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/trial" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base px-8 py-4 rounded-xl shadow-xl shadow-emerald-500/25 transition text-center">
+        Calculate My ROI — It's Free <i class="fa-solid fa-arrow-down ml-2"></i>
+      </a>
+      <a href="#onboarding" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-base px-8 py-4 rounded-xl transition text-center">
+        See 10-Minute Setup <i class="fa-solid fa-stopwatch ml-2"></i>
+      </a>
+    </div>
+  </div>
+
+  <!-- Social proof bar -->
+  <div class="max-w-3xl mx-auto px-6 mt-14">
+    <div class="grid grid-cols-3 gap-6 border border-slate-800 rounded-2xl bg-slate-900/50 p-6">
+      <div class="text-center">
+        <div class="text-2xl sm:text-3xl font-black text-emerald-400">$28K</div>
+        <div class="text-xs text-slate-400 mt-1">Avg. annual savings per location</div>
+      </div>
+      <div class="text-center border-x border-slate-800">
+        <div class="text-2xl sm:text-3xl font-black text-white">712%</div>
+        <div class="text-xs text-slate-400 mt-1">Net monthly ROI at 10 hrs/week saved</div>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl sm:text-3xl font-black text-teal-400">&lt;10 min</div>
+        <div class="text-xs text-slate-400 mt-1">To first insight — no IT required</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INTERACTIVE ROI CALCULATOR ───────────────────────────────────── -->
+<section id="roi" class="py-20 border-t border-slate-800/60">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <span class="text-emerald-400 font-mono text-xs uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Interactive ROI Calculator</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-3">See Exactly What You're Losing</h2>
+      <p class="text-slate-400 max-w-xl mx-auto">Drag the sliders to match your restaurant. Watch your ROI update instantly.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-8 items-start">
+      <!-- Sliders -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-8">
+
+        <!-- Slider 1: Weekly hours -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <label class="text-sm font-semibold text-slate-300">Weekly hours on manual P&amp;L &amp; entry</label>
+            <span id="hours-label" class="text-emerald-400 font-black text-xl font-mono">10 hrs</span>
+          </div>
+          <input type="range" id="hours-slider" min="2" max="30" value="10" step="1" class="w-full" oninput="calcROI()" />
+          <div class="flex justify-between text-xs text-slate-600 mt-1"><span>2 hrs</span><span>30 hrs</span></div>
+          <p class="text-xs text-slate-500 mt-2">Manager hourly rate assumed at $25/hr</p>
+        </div>
+
+        <!-- Slider 2: Monthly food spend -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <label class="text-sm font-semibold text-slate-300">Monthly food &amp; beverage spend</label>
+            <span id="spend-label" class="text-emerald-400 font-black text-xl font-mono">$20K</span>
+          </div>
+          <input type="range" id="spend-slider" min="5000" max="150000" value="20000" step="1000" class="w-full" oninput="calcROI()" />
+          <div class="flex justify-between text-xs text-slate-600 mt-1"><span>$5K</span><span>$150K</span></div>
+          <p class="text-xs text-slate-500 mt-2">CashCall catches ~2% avg. vendor price creep per cycle</p>
+        </div>
+
+        <!-- Slider 3: Locations -->
+        <div>
+          <div class="flex justify-between items-center mb-3">
+            <label class="text-sm font-semibold text-slate-300">Number of locations</label>
+            <span id="locs-label" class="text-emerald-400 font-black text-xl font-mono">1</span>
+          </div>
+          <input type="range" id="locs-slider" min="1" max="20" value="1" step="1" class="w-full" oninput="calcROI()" />
+          <div class="flex justify-between text-xs text-slate-600 mt-1"><span>1</span><span>20</span></div>
+        </div>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="space-y-4">
+        <!-- Time saved -->
+        <div class="roi-card rounded-2xl p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Time Saved Value</div>
+              <div class="text-xs text-slate-500">Hours × $25/hr × 4 weeks × locations</div>
+            </div>
+            <div class="text-right">
+              <div id="time-saved" class="text-2xl font-black text-white font-mono">$1,000</div>
+              <div class="text-xs text-emerald-400">per month</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Price creep -->
+        <div class="roi-card rounded-2xl p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">Vendor Price Creep Protected</div>
+              <div class="text-xs text-slate-500">Food spend × 2% avg. creep caught × locations</div>
+            </div>
+            <div class="text-right">
+              <div id="creep-saved" class="text-2xl font-black text-white font-mono">$400</div>
+              <div class="text-xs text-emerald-400">per month</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription cost -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <div class="text-xs text-slate-400 uppercase tracking-wide mb-1">CashCall Subscription</div>
+              <div class="text-xs text-slate-500">$80/location/month</div>
+            </div>
+            <div class="text-right">
+              <div id="sub-cost" class="text-2xl font-black text-red-400 font-mono">−$80</div>
+              <div class="text-xs text-slate-400">per month</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Net ROI — BIG -->
+        <div class="bg-gradient-to-br from-emerald-500/15 to-teal-500/10 border border-emerald-500/30 rounded-2xl p-6">
+          <div class="text-xs text-emerald-400 uppercase tracking-widest font-semibold mb-2">Your Net Monthly ROI</div>
+          <div class="flex items-end gap-3">
+            <div id="net-roi" class="text-5xl font-black text-emerald-400 font-mono leading-none">$1,320</div>
+            <div class="pb-1">
+              <div id="roi-pct" class="text-lg font-bold text-white">1,650% ROI</div>
+              <div class="text-xs text-slate-400">net gain per month</div>
+            </div>
+          </div>
+          <a href="/trial" class="mt-5 w-full block text-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-xl transition text-sm">
+            Start Free Trial — Lock In This ROI <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 3-STEP ONBOARDING CHECKLIST ─────────────────────────────────── -->
+<section id="onboarding" class="py-20 bg-slate-900/30 border-t border-slate-800/60">
+  <div class="max-w-4xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <span class="text-emerald-400 font-mono text-xs uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Day-One Onboarding</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-3">Live in Under 10 Minutes</h2>
+      <p class="text-slate-400 max-w-xl mx-auto">Three steps. No IT department. No implementation consultant. No months of onboarding.</p>
+    </div>
+
+    <div class="space-y-6">
+
+      <!-- Step 1 -->
+      <div class="relative flex gap-6 card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6 cursor-default">
+        <div class="checklist-dot bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">1</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2 flex-wrap">
+            <h3 class="text-lg font-bold text-white">Connect Your Core Ecosystem</h3>
+            <span class="text-xs font-mono bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full">Minute 0–3</span>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            Link your POS system (Toast, Clover, or Square) with a single click. Input your ADP payroll credentials or upload your weekly payroll journal. <strong class="text-white">Instant baseline established.</strong>
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="inline-flex items-center gap-1.5 text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg">
+              <i class="fa-solid fa-plug text-emerald-400"></i> Toast POS
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg">
+              <i class="fa-solid fa-plug text-emerald-400"></i> Clover
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg">
+              <i class="fa-solid fa-plug text-emerald-400"></i> Square
+            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg">
+              <i class="fa-solid fa-users text-teal-400"></i> ADP / Gusto / Intuit
+            </span>
+          </div>
+        </div>
+        <div class="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 self-start mt-1">
+          <i class="fa-solid fa-link text-emerald-400 text-lg"></i>
+        </div>
+      </div>
+
+      <!-- Arrow between steps -->
+      <div class="flex justify-center"><i class="fa-solid fa-chevron-down text-slate-700 text-lg"></i></div>
+
+      <!-- Step 2 -->
+      <div class="relative flex gap-6 card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6 cursor-default">
+        <div class="checklist-dot bg-teal-500/15 border border-teal-500/30 text-teal-400">2</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2 flex-wrap">
+            <h3 class="text-lg font-bold text-white">Snap &amp; Parse Your First 3 Invoices</h3>
+            <span class="text-xs font-mono bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full">Minute 3–7</span>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            Take photos of your latest Sysco, US Foods, or Restaurant Depot delivery receipts with your smartphone — or upload PDFs. <strong class="text-white">Watch our OCR engine instantly extract every line item and flag price shifts</strong> vs. your last order.
+          </p>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl p-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs text-slate-500 font-mono">Sysco Invoice #99281 — Auto-Parsed</span>
+              <span class="bg-red-500/10 text-red-400 border border-red-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full">⚠ Price Hike Detected +11%</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-xs">
+              <div class="bg-slate-900 rounded-lg p-2">
+                <div class="text-slate-500 mb-1">Item</div>
+                <div class="text-white font-medium truncate">Chicken Breast Bnls</div>
+              </div>
+              <div class="bg-slate-900 rounded-lg p-2">
+                <div class="text-slate-500 mb-1">Unit Price</div>
+                <div class="text-red-400 font-bold">$3.85/lb ↑</div>
+              </div>
+              <div class="bg-slate-900 rounded-lg p-2">
+                <div class="text-slate-500 mb-1">vs Last Order</div>
+                <div class="text-red-400 font-bold">+$0.40/lb</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 self-start mt-1">
+          <i class="fa-solid fa-camera text-teal-400 text-lg"></i>
+        </div>
+      </div>
+
+      <!-- Arrow between steps -->
+      <div class="flex justify-center"><i class="fa-solid fa-chevron-down text-slate-700 text-lg"></i></div>
+
+      <!-- Step 3 -->
+      <div class="relative flex gap-6 card-hover bg-slate-900 border border-emerald-500/20 rounded-2xl p-6 cursor-default">
+        <div class="checklist-dot bg-emerald-500/20 border border-emerald-500/40 text-white font-black">✓</div>
+        <div class="flex-1">
+          <div class="flex items-center gap-3 mb-2 flex-wrap">
+            <h3 class="text-lg font-bold text-white">Review Your Morning Message</h3>
+            <span class="text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">Minute 7–10 · You're Live</span>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed mb-4">
+            Open your unified daily command center. Your <strong class="text-white">Daily Sales, Food Cost %, Labor Cost %, and Net Margin snapshot</strong> are already calculated and waiting. Receive it automatically every morning via email or WhatsApp.
+          </p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-500 mb-1">Sales</div>
+              <div class="text-emerald-400 font-black font-mono">$6,482</div>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-500 mb-1">Food %</div>
+              <div class="text-emerald-400 font-black font-mono">28.4%</div>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-500 mb-1">Labor %</div>
+              <div class="text-amber-400 font-black font-mono">31.2%</div>
+            </div>
+            <div class="bg-slate-950 border border-emerald-500/20 rounded-xl p-3 text-center">
+              <div class="text-xs text-slate-500 mb-1">Net Margin</div>
+              <div class="text-emerald-400 font-black font-mono">20.3%</div>
+            </div>
+          </div>
+        </div>
+        <div class="hidden sm:flex items-center justify-center w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 self-start mt-1">
+          <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA after checklist -->
+    <div class="mt-10 text-center">
+      <a href="/trial" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-8 py-4 rounded-xl shadow-xl shadow-emerald-500/20 transition transform hover:-translate-y-0.5">
+        <i class="fa-solid fa-rocket"></i> Start My 10-Minute Setup — Free
+      </a>
+      <p class="text-slate-600 text-xs mt-3">No credit card · No IT setup · Cancel anytime</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── COMPARISON TABLE ──────────────────────────────────────────────── -->
+<section id="compare" class="py-20 border-t border-slate-800/60">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <span class="text-emerald-400 font-mono text-xs uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">CashCall vs. Legacy Enterprise Tools</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-3">Built for Operators, Not Enterprise IT</h2>
+      <p class="text-slate-400 max-w-xl mx-auto">Restaurant365 and its peers were designed for 200-location chains. CashCall is designed for you.</p>
+    </div>
+
+    <div class="overflow-x-auto rounded-2xl border border-slate-800">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-800">
+            <th class="text-left p-5 text-slate-400 font-semibold bg-slate-900/80 w-1/3">Feature</th>
+            <th class="p-5 text-center bg-emerald-500/10 border-x border-emerald-500/20">
+              <div class="flex items-center justify-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center">
+                  <i class="fa-solid fa-chart-line text-slate-950 text-[10px]"></i>
+                </div>
+                <span class="font-black text-white">CashCall</span>
+              </div>
+            </th>
+            <th class="p-5 text-center bg-slate-900/50 text-slate-400 font-semibold">Legacy Tools<br /><span class="text-xs font-normal text-slate-600">(e.g., Restaurant365)</span></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-800">
+          <tr>
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Target Operator</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <span class="text-emerald-400 font-semibold">Independent &amp; multi-unit operators (1–20 locations)</span>
+            </td>
+            <td class="p-5 text-center text-slate-400">Massive enterprise chains &amp; corporate groups</td>
+          </tr>
+          <tr>
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Pricing Model</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span class="text-emerald-400 font-semibold">Flat $80/location/mo — no hidden fees</span>
+              </div>
+            </td>
+            <td class="p-5 text-center text-slate-400">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-xmark text-red-400"></i>
+                <span>High implementation fees + steep monthly licensing</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Implementation Time</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span class="text-emerald-400 font-semibold">Under 10 minutes — phone OCR + sandbox</span>
+              </div>
+            </td>
+            <td class="p-5 text-center text-slate-400">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-xmark text-red-400"></i>
+                <span>Months of onboarding, custom IT setup &amp; accounting audits</span>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Data Security</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span class="text-emerald-400 font-semibold">AES-256-GCM zero-knowledge encryption</span>
+              </div>
+            </td>
+            <td class="p-5 text-center text-slate-400">Standard cloud storage with third-party data access</td>
+          </tr>
+          <tr>
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Invoice OCR</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span class="text-emerald-400 font-semibold">Phone photo → AI-parsed in seconds</span>
+              </div>
+            </td>
+            <td class="p-5 text-center text-slate-400">Manual entry or expensive EDI integration</td>
+          </tr>
+          <tr>
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Vendor Price-Creep Alerts</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span class="text-emerald-400 font-semibold">Automatic — flagged on every invoice scan</span>
+              </div>
+            </td>
+            <td class="p-5 text-center text-slate-400">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-xmark text-red-400"></i>
+                <span>Not available / requires custom module</span>
+              </div>
+            </td>
+          </tr>
+          <tr class="border-t border-slate-700">
+            <td class="p-5 text-slate-300 font-medium bg-slate-900/30">Daily WhatsApp / Email Digest</td>
+            <td class="p-5 text-center bg-emerald-500/5 border-x border-emerald-500/15">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                <span class="text-emerald-400 font-semibold">P&amp;L snapshot every morning</span>
+              </div>
+            </td>
+            <td class="p-5 text-center text-slate-400">
+              <div class="flex items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-xmark text-red-400"></i>
+                <span>Not included</span>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-8 text-center">
+      <a href="/trial" class="inline-flex items-center gap-2 text-sm font-semibold text-emerald-400 hover:text-emerald-300 transition">
+        Try CashCall free for 30 days <i class="fa-solid fa-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PLATFORM PREVIEW ──────────────────────────────────────────────── -->
+<section id="preview" class="py-20 bg-slate-900/30 border-t border-slate-800/60">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <span class="text-emerald-400 font-mono text-xs uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">Live Platform Preview</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4 mb-3">Inside the CashCall Command Center</h2>
+      <p class="text-slate-400 max-w-xl mx-auto">Click through to preview the core modules built into the platform.</p>
+    </div>
+
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+      <!-- Window bar -->
+      <div class="bg-slate-950 px-6 py-4 border-b border-slate-800 flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+          <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+          <span class="text-xs font-mono text-slate-500 ml-2">portal.cashcall.io · live-preview</span>
+        </div>
+        <div class="flex items-center space-x-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+          <button onclick="switchTab('daily')" id="tab-daily" class="tab-btn tab-active px-4 py-1.5 rounded-lg text-xs font-semibold transition">Daily P&amp;L</button>
+          <button onclick="switchTab('ocr')" id="tab-ocr" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">Invoice OCR</button>
+          <button onclick="switchTab('intel')" id="tab-intel" class="tab-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">Market Intel</button>
+        </div>
+      </div>
+
+      <div class="p-8 sm:p-12 min-h-[360px] flex flex-col justify-center">
+        <!-- Daily P&L -->
+        <div id="content-daily" class="preview-pane space-y-6">
+          <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Morning Financial Snapshot</span>
+              <h3 class="text-xl font-bold text-white mt-1">Daily Operations &amp; Prime Cost Review</h3>
+            </div>
+            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-mono">
+              <i class="fa-solid fa-circle-check mr-1"></i> Synced: Today 6:00 AM
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+              <div class="text-xs text-slate-400 mb-1">Yesterday's Sales</div>
+              <div class="text-2xl font-black text-white font-mono">$6,482</div>
+              <div class="text-[10px] text-emerald-400 mt-1"><i class="fa-solid fa-arrow-up"></i> +8.4% vs last week</div>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+              <div class="text-xs text-slate-400 mb-1">Food Cost %</div>
+              <div class="text-2xl font-black text-emerald-400 font-mono">28.4%</div>
+              <div class="text-[10px] text-slate-400 mt-1">Target: &lt; 29.0%</div>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+              <div class="text-xs text-slate-400 mb-1">Labor Cost %</div>
+              <div class="text-2xl font-black text-amber-400 font-mono">31.2%</div>
+              <div class="text-[10px] text-slate-400 mt-1">ADP Payroll Synced</div>
+            </div>
+            <div class="bg-slate-950 border border-emerald-500/20 p-4 rounded-xl">
+              <div class="text-xs text-slate-400 mb-1">Net Margin</div>
+              <div class="text-2xl font-black text-emerald-400 font-mono">20.3%</div>
+              <div class="text-[10px] text-emerald-400 mt-1">Profitable Day ✓</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invoice OCR -->
+        <div id="content-ocr" class="preview-pane hidden space-y-5">
+          <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Automated Document Parsing</span>
+              <h3 class="text-xl font-bold text-white mt-1">Sysco Invoice #99281 — Line Item Audit</h3>
+            </div>
+            <div class="bg-red-500/10 border border-red-500/20 text-red-400 px-3 py-1.5 rounded-lg text-xs font-mono">
+              <i class="fa-solid fa-triangle-exclamation mr-1"></i> Price Creep Detected (+11%)
+            </div>
+          </div>
+          <div class="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden">
+            <table class="w-full text-left text-sm">
+              <thead>
+                <tr class="border-b border-slate-800 text-xs text-slate-500 bg-slate-900/60">
+                  <th class="p-3">Item</th>
+                  <th class="p-3">Qty</th>
+                  <th class="p-3">Unit Price</th>
+                  <th class="p-3">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-xs">
+                <tr>
+                  <td class="p-3 text-white">Chicken Breast Bnls/Skls 4/10#</td>
+                  <td class="p-3 text-slate-400 font-mono">4 cs</td>
+                  <td class="p-3 text-red-400 font-bold font-mono">$3.85/lb <span class="text-red-500">(+$0.40)</span></td>
+                  <td class="p-3"><span class="bg-red-500/10 text-red-400 px-2 py-0.5 rounded-full text-[10px]">Price Hike Alert</span></td>
+                </tr>
+                <tr>
+                  <td class="p-3 text-white">Mozzarella Shredded Block 6/5#</td>
+                  <td class="p-3 text-slate-400 font-mono">6 cs</td>
+                  <td class="p-3 text-emerald-400 font-bold font-mono">$2.60/lb</td>
+                  <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-full text-[10px]">Stable</span></td>
+                </tr>
+                <tr>
+                  <td class="p-3 text-white">Roma Tomatoes Fresh 25#</td>
+                  <td class="p-3 text-slate-400 font-mono">3 cs</td>
+                  <td class="p-3 text-amber-400 font-bold font-mono">$1.42/lb <span class="text-amber-500">(+$0.08)</span></td>
+                  <td class="p-3"><span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full text-[10px]">Minor Rise</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Market Intel -->
+        <div id="content-intel" class="preview-pane hidden space-y-5">
+          <div class="flex items-center justify-between flex-wrap gap-4 border-b border-slate-800 pb-4">
+            <div>
+              <span class="text-xs font-mono text-emerald-400 uppercase tracking-widest">Negotiation Intelligence</span>
+              <h3 class="text-xl font-bold text-white mt-1">Regional Supplier Benchmarking</h3>
+            </div>
+            <div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-mono">
+              <i class="fa-solid fa-lightbulb mr-1"></i> $1,400 Savings Identified
+            </div>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">CashCall compares your actual paid delivery prices against regional data across <strong class="text-white">Sysco, US Foods, and Restaurant Depot</strong> — arming you with exact talking points for your next rep meeting.</p>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div class="bg-slate-950 border border-amber-500/20 p-4 rounded-xl">
+              <div class="text-xs text-amber-400 mb-2 font-semibold">Top Negotiation Target</div>
+              <div class="font-bold text-white mb-1">Produce &amp; Salad Greens</div>
+              <div class="text-sm text-slate-400">Category spend: <span class="text-white">$4,200/mo</span></div>
+              <div class="mt-2 text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-1 rounded-lg inline-block">7.5% Above Regional Average</div>
+            </div>
+            <div class="bg-slate-950 border border-emerald-500/20 p-4 rounded-xl">
+              <div class="text-xs text-emerald-400 mb-2 font-semibold">Best Value Supplier</div>
+              <div class="font-bold text-white mb-1">Proteins &amp; Dairy</div>
+              <div class="text-sm text-slate-400">Your price: <span class="text-white">$3.85/lb chicken</span></div>
+              <div class="mt-2 text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded-lg inline-block">3.2% Below Regional Average</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES GRID ─────────────────────────────────────────────────── -->
+<section class="py-20 border-t border-slate-800/60">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-extrabold text-white mb-3">Everything You Need. Nothing You Don't.</h2>
+      <p class="text-slate-400">All included in one flat $80/location/month subscription.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-chart-line text-emerald-400"></i>
+        </div>
+        <h3 class="font-bold text-white mb-2">Prime Cost Dashboard</h3>
+        <p class="text-slate-400 text-sm">Food cost + labor cost ÷ revenue — the single most important restaurant metric — at a glance every morning.</p>
+      </div>
+      <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-camera text-teal-400"></i>
+        </div>
+        <h3 class="font-bold text-white mb-2">Invoice OCR</h3>
+        <p class="text-slate-400 text-sm">Snap a photo → AI extracts every line item, catches price changes, and updates your food cost instantly.</p>
+      </div>
+      <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-bell text-amber-400"></i>
+        </div>
+        <h3 class="font-bold text-white mb-2">Daily Digest</h3>
+        <p class="text-slate-400 text-sm">Automated P&amp;L snapshot delivered every morning via email or WhatsApp — know your numbers before the first cover.</p>
+      </div>
+      <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-plug text-purple-400"></i>
+        </div>
+        <h3 class="font-bold text-white mb-2">POS &amp; Payroll Integrations</h3>
+        <p class="text-slate-400 text-sm">Auto-sync sales from Toast, Clover, Square. Import payroll from ADP, Gusto, Intuit. Zero manual entry.</p>
+      </div>
+      <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-building text-blue-400"></i>
+        </div>
+        <h3 class="font-bold text-white mb-2">Multi-Location</h3>
+        <p class="text-slate-400 text-sm">One dashboard for all your locations. Compare performance, spot outliers, and allocate resources with confidence.</p>
+      </div>
+      <div class="card-hover bg-slate-900 border border-slate-800 rounded-2xl p-6">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-4">
+          <i class="fa-solid fa-shield-halved text-rose-400"></i>
+        </div>
+        <h3 class="font-bold text-white mb-2">AES-256 Encryption</h3>
+        <p class="text-slate-400 text-sm">Zero-knowledge client-side encryption. Your financial data is private — even we can't see it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ─────────────────────────────────────────────────────── -->
+<section class="py-24 border-t border-slate-800/60">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <div class="bg-gradient-to-br from-emerald-500/10 to-teal-500/5 border border-emerald-500/25 rounded-3xl p-12">
+      <h2 class="text-3xl sm:text-4xl font-black text-white mb-4">Stop Guessing. Start Knowing.</h2>
+      <p class="text-slate-400 text-lg mb-8">Join restaurant operators who've already reclaimed $28,000/year per location in lost margin.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/trial" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-base px-8 py-4 rounded-xl shadow-xl shadow-emerald-500/25 transition transform hover:-translate-y-0.5">
+          Start Free 30-Day Trial <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+        <a href="/login" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-semibold text-base px-8 py-4 rounded-xl transition">
+          Sign In to Dashboard
+        </a>
+      </div>
+      <p class="text-slate-600 text-xs mt-6">$80/location/month · No credit card required · Cancel anytime · Setup in &lt;10 minutes</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+<footer class="border-t border-slate-800 py-10">
+  <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center space-x-2">
+      <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center">
+        <i class="fa-solid fa-chart-line text-slate-950 text-xs"></i>
+      </div>
+      <span class="font-black text-white">Cash<span class="text-emerald-400">Call</span><span class="text-slate-600">.io</span></span>
+    </div>
+    <div class="flex items-center gap-6 text-xs text-slate-500">
+      <a href="/about" class="hover:text-slate-300 transition">About</a>
+      <a href="/security" class="hover:text-slate-300 transition">Security</a>
+      <a href="/investors" class="hover:text-slate-300 transition">Investors</a>
+      <a href="mailto:hello@cashcall.io" class="hover:text-slate-300 transition">hello@cashcall.io</a>
+    </div>
+    <p class="text-xs text-slate-600">© 2026 CashCall.io by SSV Group</p>
+  </div>
+</footer>
+
+<!-- ─── SCRIPTS ───────────────────────────────────────────────────────── -->
+<script>
+  // ROI Calculator
+  function calcROI() {
+    const hours = +document.getElementById('hours-slider').value;
+    const spend = +document.getElementById('spend-slider').value;
+    const locs  = +document.getElementById('locs-slider').value;
+
+    document.getElementById('hours-label').textContent = hours + ' hrs';
+    document.getElementById('spend-label').textContent = spend >= 1000 ? '$' + (spend/1000).toFixed(0) + 'K' : '$' + spend;
+    document.getElementById('locs-label').textContent  = locs;
+
+    const timeSaved   = hours * 25 * 4 * locs;
+    const creepSaved  = spend * 0.02 * locs;
+    const subCost     = 80 * locs;
+    const netROI      = timeSaved + creepSaved - subCost;
+    const roiPct      = Math.round((netROI / subCost) * 100);
+
+    const fmt = (n) => '$' + n.toLocaleString('en-US', {maximumFractionDigits:0});
+
+    document.getElementById('time-saved').textContent = fmt(timeSaved);
+    document.getElementById('creep-saved').textContent = fmt(creepSaved);
+    document.getElementById('sub-cost').textContent = '−' + fmt(subCost);
+    document.getElementById('net-roi').textContent = fmt(netROI);
+    document.getElementById('roi-pct').textContent = roiPct.toLocaleString() + '% ROI';
+  }
+  calcROI();
+
+  // Platform Preview Tabs
+  function switchTab(id) {
+    document.querySelectorAll('.preview-pane').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.remove('tab-active');
+      btn.classList.add('text-slate-400');
+    });
+    document.getElementById('content-' + id).classList.remove('hidden');
+    const btn = document.getElementById('tab-' + id);
+    btn.classList.add('tab-active');
+    btn.classList.remove('text-slate-400');
+  }
+</script>
+</body>
+</html>
