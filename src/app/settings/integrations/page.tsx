@@ -335,8 +335,8 @@ function IntegrationsContent() {
       const json = await res.json() as { ok?: boolean; merchant_name?: string; error?: string };
       if (!json.ok) { showMsg(locId + "_clover", `✗ ${json.error ?? "Save failed"}`); return; }
       setCloverManual(p => ({ ...p, [locId]: { ...p[locId], show: false } }));
-      loadData();
       showMsg(locId + "_clover", `✓ Connected to ${json.merchant_name ?? "Clover"}! Syncing last 7 days…`);
+      await loadData(); // await so cloverConn is set before we update the message
       // Kick off a 7-day sync and show the result
       const syncRes = await fetch(`/api/pos/clover/sync?location_id=${locId}&days=7`);
       const syncJson = await syncRes.json() as { ok?: boolean; rows_upserted?: number; errors?: string[] };
@@ -346,7 +346,7 @@ function IntegrationsContent() {
         const errDetail = syncJson.errors?.[0] ?? "Sync will retry tonight.";
         showMsg(locId + "_clover", `✓ Connected! Sync note: ${errDetail}`);
       }
-      loadData();
+      await loadData();
     } catch (e) {
       showMsg(locId + "_clover", "✗ " + (e instanceof Error ? e.message : "Save failed"));
     } finally {
@@ -553,6 +553,11 @@ function IntegrationsContent() {
                                   Cancel
                                 </button>
                               </div>
+                              {msg[cloverKey] && (
+                                <p className={`text-[11px] font-medium ${msg[cloverKey].startsWith("✓") ? "text-green-600" : msg[cloverKey].startsWith("⏳") ? "text-blue-500" : "text-red-500"}`}>
+                                  {msg[cloverKey]}
+                                </p>
+                              )}
                             </div>
                           ) : (
                             /* Default: OAuth + manual fallback link */
@@ -569,6 +574,12 @@ function IntegrationsContent() {
                                 Use API key instead
                               </button>
                             </>
+                          )}
+                          {/* Message display — visible in both connected and not-connected states */}
+                          {msg[cloverKey] && (
+                            <p className={`text-[11px] font-medium mt-1 ${msg[cloverKey].startsWith("✓") ? "text-green-600" : msg[cloverKey].startsWith("⏳") ? "text-blue-500" : "text-red-500"}`}>
+                              {msg[cloverKey]}
+                            </p>
                           )}
                         </>
                       )}
