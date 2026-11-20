@@ -37,12 +37,15 @@ export async function POST(req: NextRequest) {
   } catch { /* network error — save anyway */ }
 
   // Upsert into pos_connections
+  // merchant_id + access_token are NOT NULL — must always be set
   const { error: dbErr } = await supabase.from("pos_connections").upsert({
     user_id:            user.id,
     location_id:        location_id,
     provider:           "clover",
-    api_token:          api_token.trim(),
-    oauth_access_token: api_token.trim(),   // sync route reads either column
+    merchant_id:        merchant_id.trim(),       // NOT NULL — primary ID column
+    access_token:       api_token.trim(),         // NOT NULL — primary token column
+    api_token:          api_token.trim(),         // also populate alias column
+    oauth_access_token: api_token.trim(),         // sync route reads any of these
     oauth_merchant_id:  merchant_id.trim(),
     client_id:          merchant_id.trim(),
     status:             "connected",

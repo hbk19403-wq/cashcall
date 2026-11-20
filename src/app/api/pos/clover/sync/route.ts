@@ -230,14 +230,16 @@ async function syncHandler(req: NextRequest, body: Record<string, string> | null
           aggregator_commission: 0,
         }, { onConflict: "location_id,sale_date" });
 
-        // Log the sync
-        await supabase.from("pos_sync_log").insert({
-          location_id:   locId,
-          provider:      "clover",
-          sync_date:     dateStr,
-          rows_upserted: 1,
-          error:         upsertErr?.message ?? null,
-        });
+        // Log the sync (best-effort)
+        try {
+          await supabase.from("pos_sync_log").insert({
+            location_id:   locId,
+            provider:      "clover",
+            sync_date:     dateStr,
+            rows_upserted: upsertErr ? 0 : 1,
+            error:         upsertErr?.message ?? null,
+          });
+        } catch { /* ignore if table missing */ }
 
         if (!upsertErr) totalRows++;
       }
