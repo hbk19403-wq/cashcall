@@ -61,6 +61,7 @@ function IntegrationsContent() {
   const [laborForms, setLaborForms]       = useState<Record<string, { api_key: string; location_code: string }>>({});
   const [maghilForms, setMaghilForms]     = useState<Record<string, { store_id: string; api_key: string }>>({});
   const [banner, setBanner]               = useState<{ type: "ok" | "err"; text: string } | null>(null);
+  const [cloverManual, setCloverManual]   = useState<Record<string, { merchant_id: string; api_token: string; show: boolean }>>({});
 
   // Handle success/error from OAuth callbacks
   useEffect(() => {
@@ -319,6 +320,33 @@ function IntegrationsContent() {
     }
   };
 
+  // Clover manual API key connect
+  const saveCloverManual = async (locId: string) => {
+    const f = cloverManual[locId];
+    if (!f?.merchant_id?.trim()) { showMsg(locId + "_clover", "⚠ Merchant ID required"); return; }
+    if (!f?.api_token?.trim())   { showMsg(locId + "_clover", "⚠ API Token required");   return; }
+    setSaving(p => ({ ...p, [locId + "_clover_manual"]: true }));
+    try {
+      const res = await fetch("/api/pos/clover/connect-manual", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location_id: locId, merchant_id: f.merchant_id.trim(), api_token: f.api_token.trim() }),
+      });
+      const json = await res.json() as { ok?: boolean; merchant_name?: string; error?: string };
+      if (!json.ok) { showMsg(locId + "_clover", `✗ ${json.error ?? "Save failed"}`); return; }
+      showMsg(locId + "_clover", `✓ Connected to ${json.merchant_name ?? "Clover"}! Syncing sales…`);
+      setCloverManual(p => ({ ...p, [locId]: { ...p[locId], show: false } }));
+      loadData();
+      // Kick off a 7-day sync immediately
+      await fetch(`/api/pos/clover/sync?location_id=${locId}&days=7`);
+      loadData();
+    } catch (e) {
+      showMsg(locId + "_clover", "✗ " + (e instanceof Error ? e.message : "Save failed"));
+    } finally {
+      setSaving(p => ({ ...p, [locId + "_clover_manual"]: false }));
+    }
+  };
+
   // Clover demo sync — generates realistic data for client presentations
   const handleDemoSync = async (locId: string) => {
     const key = locId + "_clover_demo";
@@ -479,12 +507,62 @@ function IntegrationsContent() {
                         </>
                       ) : (
                         <>
-                          <p className="text-[11px] text-gray-400">One-click OAuth — no credentials to copy-paste</p>
-                          <a href={`/api/pos/clover/connect?location_id=${loc.id}`}
-                            className="block w-full text-center px-3 py-2 rounded-lg text-xs font-bold text-white transition"
-                            style={{ background: "#1a1a2e" }}>
-                            Connect Clover →
-                          </a>
+                          {cloverManual[loc.id]?.show ? (
+                            /* Manual API key form */
+                            <div className="space-y-2">
+                              <p className="text-[11px] text-gray-500 font-medium">Enter your Clover credentials:</p>
+                              <div>
+                                <label className="text-[10px] text-gray-400 uppercase tracking-wide">Merchant ID</label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. ABC123XYZ456"
+                                  value={cloverManual[loc.id]?.merchant_id ?? ""}
+                                  onChange={e => setCloverManual(p => ({ ...p, [loc.id]: { ...p[loc.id], merchant_id: e.target.value, show: true, api_token: p[loc.id]?.api_token ?? "" } }))}
+                                  className="w-full mt-0.5 px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-green-400"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-[10px] text-gray-400 uppercase tracking-wide">API Token</label>
+                                <input
+                                  type="password"
+                                  placeholder="Paste your Clover API token"
+                                  value={cloverManual[loc.id]?.api_token ?? ""}
+                                  onChange={e => setCloverManual(p => ({ ...p, [loc.id]: { ...p[loc.id], api_token: e.target.value, show: true, merchant_id: p[loc.id]?.merchant_id ?? "" } }))}
+                                  className="w-full mt-0.5 px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-green-400"
+                                />
+                              </div>
+                              <p className="text-[10px] text-gray-400">
+                                Find these in Clover Dashboard → Account & Setup → API Tokens
+                              </p>
+                              <div className="flex gap-2">
+                                <button onClick={() => saveCloverManual(loc.id)}
+                                  disabled={saving[loc.id + "_clover_manual"]}
+                                  className="flex-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white disabled:opacity-50 transition"
+                                  style={{ background: "#15803d" }}>
+                                  {saving[loc.id + "_clover_manual"] ? "⏳ Verifying…" : "✓ Save & Connect"}
+                                </button>
+                                <button onClick={() => setCloverManual(p => ({ ...p, [loc.id]: { ...p[loc.id], show: false, merchant_id: p[loc.id]?.merchant_id ?? "", api_token: p[loc.id]?.api_token ?? "" } }))}
+                                  className="px-3 py-1.5 rounded-lg text-xs text-gray-500 bg-gray-100 hover:bg-gray-200 transition">
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          ) : (
+                            /* Default: OAuth + manual fallback link */
+                            <>
+                              <p className="text-[11px] text-gray-400">One-click OAuth — no credentials to copy-paste</p>
+                              <a href={`/api/pos/clover/connect?location_id=${loc.id}`}
+                                className="block w-full text-center px-3 py-2 rounded-lg text-xs font-bold text-white transition"
+                                style={{ background: "#1a1a2e" }}>
+                                Connect Clover →
+                              </a>
+                              <button
+                                onClick={() => setCloverManual(p => ({ ...p, [loc.id]: { merchant_id: "", api_token: "", show: true } }))}
+                                className="w-full text-[11px] text-gray-400 hover:text-gray-600 underline text-center transition">
+                                Use API key instead
+                              </button>
+                            </>
+                          )}
                         </>
                       )}
                     </div>
