@@ -22,25 +22,19 @@ export async function POST(req: NextRequest) {
     .eq("id", location_id).eq("user_id", user.id).maybeSingle();
   if (!loc) return NextResponse.json({ error: "Location not found" }, { status: 404 });
 
-  // Validate the token by calling Clover's merchant endpoint
-  let merchantName = "Clover Merchant";
-  const verifyRes = await fetch(`${CLOVER_API}/v3/merchants/${merchant_id.trim()}`, {
-    headers: { Authorization: `Bearer ${api_token.trim()}` },
-  });
-
-  if (!verifyRes.ok) {
-    const body = await verifyRes.text();
-    if (verifyRes.status === 401) {
-      return NextResponse.json({ error: "Invalid API token — check your Clover API token and try again" }, { status: 400 });
+  // Try to validate the token against Clover's merchant endpoint (best-effort — some tokens
+  // restrict this call but still work for payments, so we save regardless)
+  let merchantName = loc.name ?? "Clover Merchant";
+  try {
+    const verifyRes = await fetch(`${CLOVER_API}/v3/merchants/${merchant_id.trim()}`, {
+      headers: { Authorization: `Bearer ${api_token.trim()}` },
+    });
+    if (verifyRes.ok) {
+      const merchant = await verifyRes.json() as { name?: string };
+      merchantName = merchant.name ?? merchantName;
     }
-    if (verifyRes.status === 404) {
-      return NextResponse.json({ error: "Merchant ID not found — check your Clover Merchant ID and try again" }, { status: 400 });
-    }
-    return NextResponse.json({ error: `Clover API error: ${verifyRes.status} ${body.slice(0, 100)}` }, { status: 400 });
-  }
-
-  const merchant = await verifyRes.json() as { name?: string; id?: string };
-  merchantName = merchant.name ?? merchantName;
+    // If 401/404 we still save — sync will catch it and set needs_reconnect
+  } catch { /* network error — save anyway */ }
 
   // Upsert into pos_connections
   const { error: dbErr } = await supabase.from("pos_connections").upsert({
