@@ -334,11 +334,18 @@ function IntegrationsContent() {
       });
       const json = await res.json() as { ok?: boolean; merchant_name?: string; error?: string };
       if (!json.ok) { showMsg(locId + "_clover", `✗ ${json.error ?? "Save failed"}`); return; }
-      showMsg(locId + "_clover", `✓ Connected to ${json.merchant_name ?? "Clover"}! Syncing sales…`);
       setCloverManual(p => ({ ...p, [locId]: { ...p[locId], show: false } }));
       loadData();
-      // Kick off a 7-day sync immediately
-      await fetch(`/api/pos/clover/sync?location_id=${locId}&days=7`);
+      showMsg(locId + "_clover", `✓ Connected to ${json.merchant_name ?? "Clover"}! Syncing last 7 days…`);
+      // Kick off a 7-day sync and show the result
+      const syncRes = await fetch(`/api/pos/clover/sync?location_id=${locId}&days=7`);
+      const syncJson = await syncRes.json() as { ok?: boolean; rows_upserted?: number; errors?: string[] };
+      if (syncRes.ok && syncJson.ok) {
+        showMsg(locId + "_clover", `✓ Connected! Synced ${syncJson.rows_upserted ?? 0} day(s) of sales.`);
+      } else {
+        const errDetail = syncJson.errors?.[0] ?? "Sync will retry tonight.";
+        showMsg(locId + "_clover", `✓ Connected! Sync note: ${errDetail}`);
+      }
       loadData();
     } catch (e) {
       showMsg(locId + "_clover", "✗ " + (e instanceof Error ? e.message : "Save failed"));
