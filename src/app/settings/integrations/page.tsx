@@ -522,7 +522,7 @@ function IntegrationsContent() {
                                 <label className="text-[10px] text-gray-400 uppercase tracking-wide">Merchant ID</label>
                                 <input
                                   type="text"
-                                  placeholder="e.g. ABC123XYZ456"
+                                  placeholder="e.g. ABC123XYZ4567"
                                   value={cloverManual[loc.id]?.merchant_id ?? ""}
                                   onChange={e => setCloverManual(p => ({ ...p, [loc.id]: { ...p[loc.id], merchant_id: e.target.value, show: true, api_token: p[loc.id]?.api_token ?? "" } }))}
                                   className="w-full mt-0.5 px-2 py-1.5 rounded-lg border border-gray-200 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-green-400"
@@ -560,7 +560,7 @@ function IntegrationsContent() {
                                 </div>
                               </div>
                               <p className="text-[10px] text-gray-400">
-                                Find these in Clover Dashboard → Account & Setup → API Tokens
+                                Merchant ID: the 13-character code in your Clover dashboard web address, after /m/ (not your processing MID). API token: Account & Setup → API Tokens.
                               </p>
                               <div className="flex gap-2">
                                 <button onClick={() => saveCloverManual(loc.id)}

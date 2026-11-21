@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkCloverCredentialShape, cloverVerifyError } from "@/lib/cloverCredentials";
 
 const CLOVER_API = process.env.CLOVER_SANDBOX === "true"
   ? "https://apisandbox.dev.clover.com"
@@ -22,19 +23,34 @@ export async function POST(req: NextRequest) {
     .eq("id", location_id).eq("user_id", user.id).maybeSingle();
   if (!loc) return NextResponse.json({ error: "Location not found" }, { status: 404 });
 
-  // Try to validate the token against Clover's merchant endpoint (best-effort — some tokens
-  // restrict this call but still work for payments, so we save regardless)
+  // 1. Shape check — catches a MID or an API token pasted into the Merchant ID box
+  const shapeError = checkCloverCredentialShape(merchant_id, api_token);
+  if (shapeError) return NextResponse.json({ error: shapeError }, { status: 400 });
+
+  // 2. Verify the pair against Clover. Credentials are never saved unverified.
   let merchantName = loc.name ?? "Clover Merchant";
+  let verifyStatus: number;
   try {
-    const verifyRes = await fetch(`${CLOVER_API}/v3/merchants/${merchant_id.trim()}`, {
+    const verifyRes = await fetch(`${CLOVER_API}/v3/merchants/${encodeURIComponent(merchant_id.trim())}`, {
       headers: { Authorization: `Bearer ${api_token.trim()}` },
+      signal: AbortSignal.timeout(10_000),
+      cache: "no-store",
     });
+    verifyStatus = verifyRes.status;
     if (verifyRes.ok) {
-      const merchant = await verifyRes.json() as { name?: string };
+      const merchant = await verifyRes.json().catch(() => ({})) as { name?: string };
       merchantName = merchant.name ?? merchantName;
     }
-    // If 401/404 we still save — sync will catch it and set needs_reconnect
-  } catch { /* network error — save anyway */ }
+  } catch {
+    return NextResponse.json(
+      { error: "Clover did not respond in time. Nothing was saved. Try again in a few minutes." },
+      { status: 502 },
+    );
+  }
+  const verifyError = cloverVerifyError(verifyStatus);
+  if (verifyError) {
+    return NextResponse.json({ error: verifyError }, { status: verifyStatus === 429 || verifyStatus >= 500 ? 502 : 400 });
+  }
 
   // Upsert into pos_connections
   // merchant_id + access_token are NOT NULL — must always be set
